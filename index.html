@@ -8,7 +8,7 @@
 <body>
 <div style="text-align:center;margin-top:320px">
   <p style="color: #666;">Secret</p>
-  <p id="webSec" contenteditable="true" style="outline: none;color: #cccccc;"></p>
+  <p id="webSec" contenteditable="true" style="margin:0 auto;border:solid 1px #ccc;width:320px;outline: none;color: #cccccc;"></p>
   <p style="color: #666;">Code</p>
   <div id="webCode" style="font-size:40px;cursor: pointer;"></div>
   <p style="color: #666;">Expire</p>
@@ -20,6 +20,7 @@
   let t = null;
   let k = '';
   let lastCode = '';
+  let isprivate = false;
   function key2code(K,t) {
     function sha1(C){
       function L(x,b){return x<<b|x>>>32-b;}
@@ -64,6 +65,7 @@
   const p = window.location.href.split('?code=');
   k = p.length > 1? p[1]: '';
   document.querySelector('#webSec').innerHTML = k;
+  isprivate = window.location.href.indexOf('?private=1') !== -1;
 
   setInterval(update, 1000);
   update();
@@ -72,7 +74,7 @@
   const callback = (mutationList, observer) => {
     for (const mutation of mutationList) {
       k = mutation.target.nodeValue;
-      window.history.pushState({state:1}, document.title,'?code='+k);
+      if (!isprivate) window.history.pushState({state:1}, document.title,'?code='+k);
       update();
     }
   };
