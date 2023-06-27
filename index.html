@@ -8,7 +8,7 @@
 <body>
 <div style="text-align:center;margin-top:320px">
   <p style="color: #666;">Secret</p>
-  <p id="webSec" contenteditable="true" style="margin:0 auto;border:solid 1px #ccc;width:360px;outline: none;color: #cccccc;"></p>
+  <input type="text" id="webSec" style="margin:0 auto;border:solid 1px #ccc;width:360px;outline: none;color: #cccccc;padding: 4px;">
   <p style="color: #666;">Code</p>
   <div id="webCode" style="font-size:40px;cursor: pointer;"></div>
   <p style="color: #666;">Expire</p>
@@ -64,21 +64,19 @@
   // parse url param
   const p = window.location.href.split('?code=');
   k = p.length > 1? p[1]: '';
-  document.querySelector('#webSec').innerHTML = k;
+  document.querySelector('#webSec').value = k;
   isprivate = window.location.href.indexOf('?private=1') !== -1;
 
   setInterval(update, 1000);
   update();
 
-  const config = { subtree: true,characterData: true };
-  const callback = (mutationList, observer) => {
-    for (const mutation of mutationList) {
-      k = mutation.target.nodeValue;
-      if (!isprivate) window.history.pushState({state:1}, document.title,'?code='+k);
-      update();
-    }
+  const onSecretUpdate = (e) => {
+    k = e.target.value;
+    if (!isprivate) window.history.pushState({state:1}, document.title,'?code='+k);
+    update();
   };
 
-  const observer = new MutationObserver(callback);
-  observer.observe(document.querySelector('#webSec'), config);
+  document.querySelector('#webSec').addEventListener('keyup', onSecretUpdate);
+  document.querySelector('#webSec').addEventListener('input', onSecretUpdate);
+  document.querySelector('#webSec').addEventListener('focus', e => e.target.setSelectionRange(0, e.target.value.length));
 </script>
