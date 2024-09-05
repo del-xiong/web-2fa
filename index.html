@@ -71,7 +71,9 @@
   update();
 
   const onSecretUpdate = (e) => {
-    k = e.target.value;
+    k = e.target.value.trim();
+    k = k.replace(/\s+/g, '');
+    e.target.value = k;
     if (!isprivate) window.history.pushState({state:1}, document.title,'?code='+k);
     update();
   };
